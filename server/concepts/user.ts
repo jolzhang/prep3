@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import DocCollection, { BaseDoc } from "../framework/doc";
-import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
+import { BadValuesError, NotAllowedError } from "./errors";
 
 export interface UserDoc extends BaseDoc {
   username: string;
@@ -11,9 +11,10 @@ export default class UserConcept {
   public readonly users = new DocCollection<UserDoc>("users");
 
   async getById(_id: ObjectId) {
-    // TODO 1: Implement this method
-    // Hint: check out this.users.readOne
-    throw new Error("Not implemented!");
+    let filter = {};
+    if (_id) filter = { _id };
+    const doc = await this.users.readOne(filter);
+    return doc;
   }
 
   async create(username: string, password: string) {
@@ -23,9 +24,10 @@ export default class UserConcept {
   }
 
   async update(_id: ObjectId, update: Partial<UserDoc>) {
-    // TODO 2: Implement this method
-    // Hint: check out this.users.updateOne
-    throw new Error("Not implemented!");
+    let filter = {};
+    if (_id) filter = { _id };
+    const doc = await this.users.updateOne(filter, update);
+    return doc;
   }
 
   // Sanitizes user object by removing password field
